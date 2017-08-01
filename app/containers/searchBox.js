@@ -8,8 +8,6 @@ import Pill from './pill';
 import { alcohols } from './../lib/data';
 import { ActionCreators } from './../actions';
 
-
-
 class SearchBox extends Component {
 	constructor(props) {
 		super(props);
@@ -163,17 +161,9 @@ class SearchBox extends Component {
 	}
 }
 
-
-
-function mapStateToProps(state) {
-  return {
-	  
-  };
-}
-
 function mapDispatchToProps(dispatch){
 	return bindActionCreators(ActionCreators, dispatch);
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBox);
+export default connect(null, mapDispatchToProps)(SearchBox);

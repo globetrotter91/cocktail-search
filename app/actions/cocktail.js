@@ -3,7 +3,6 @@ import Api from '../lib/api'
 
 export function searchCocktails(alcohols) {
     return (dispatch, getState) => {
-		//const params = 
 		return Api.post('/cocktails', {alcohols: alcohols})
 			.then(resp => {
 				dispatch(setSearhedCocktails({cocktails: resp.cocktails}));

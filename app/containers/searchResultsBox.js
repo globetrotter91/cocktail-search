@@ -7,16 +7,13 @@ import SearchResult from './searchResult' ;
 class SearchResultsBox extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-          cocktails : [] 
-        }
     }
 
     render() {
         return (
             <Grid style={{marginTop:20, backgroundColor:'#ececec'}}>
                 <Row>
-                    <SearchResult />
+                    <SearchResult cocktails={this.props.searchedCocktails}/>
                 </Row>
             </Grid>                                                                                                  
         )
@@ -25,8 +22,8 @@ class SearchResultsBox extends Component {
 
 function mapStateToProps(state) {
   return {
-
+        searchedCocktails: state.cocktails.listOfCocktails
   };
 }
 
-export default connect(mapStateToProps)(SearchResultsBox);
+export default connect(mapStateToProps, {})(SearchResultsBox);
