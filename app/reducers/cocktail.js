@@ -1,15 +1,21 @@
 import createReducer from '../lib/createReducer'
-import * as types from '../actions/types'
+import { SET_SELECTED_ALCOHOLS, SET_FETCHED_COCKTAILS } from '../actions/types'
+const initialState = {
+    selectedAlcohols: [], 
+    listOfCocktails: []
+}
 
-export const searchedRecipes = createReducer({}, {
-  [types.SET_SEARCHED_RECIPES](state, action) {
-    let newState = {}
-    action.recipes.forEach( (recipe) => {
-      let id = recipe.href
-      newState[id] = Object.assign({}, recipe, { id });
-    });
-    return newState;
-  },
-
-});
+export default (state = initialState, action={}) => {
+    switch(action.type){
+        case SET_SELECTED_ALCOHOLS:
+            return {
+                selectedAlcohols: action.alcohols
+            }
+        case SET_FETCHED_COCKTAILS:
+            return {
+                listOfCocktails: action.cocktails
+            }
+        default: return state;
+    }
+}
 

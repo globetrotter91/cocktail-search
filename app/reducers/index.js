@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
-import * as cocktailReducer from './cocktail';
+import cocktail from './cocktail';
 
-export default combineReducers(Object.assign(
-  cocktailReducer,
-
-));
+export default combineReducers({
+    cocktail
+});

@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { homePage } from './../styles/common'; 
 import getTheme from './../../native-base-theme/components';
 import { StyleProvider, Container, Content, Footer, FooterTab, Button, Icon, Text } from 'native-base';
 import commonColor from './../../native-base-theme/variables/commonColor';
 import SearchBox from './searchBox';
 import SearchResultsBox from './searchResultsBox';
+import { ActionCreators } from './../actions';
+
 
 class Home extends Component {
   constructor(props) {
-    super(props)
-    this.state = { searching: false, ingredientsInput: '' }
+    super(props); 
+    this.state = { searching: false}
   }
 
   searchPressed() {
     this.setState({ searching: true })
-    this.props.fetchRecipes(this.state.ingredientsInput).then( (res) => {
+    this.props.searchCocktails(this.props.selectedAlcohols).then( (res) => {
       this.setState({searching: false })
     });
   }
@@ -29,12 +32,12 @@ class Home extends Component {
       <StyleProvider  style={getTheme(commonColor)}>  
         <Container>        
           <Content padded style={homePage.content}>
-            <SearchBox />
+            <SearchBox/>
             <SearchResultsBox />
           </Content>
           <Footer>
             <FooterTab>
-              <Button full success>
+              <Button full success onPress={this.searchPressed.bind(this)}>
                 <Text style={{color: '#fff'}}>Find Cocktails</Text>
               </Button>
             </FooterTab>
@@ -47,8 +50,12 @@ class Home extends Component {
 
 function mapStateToProps(state) {
   return {
-    
+      selectedAlcohols: state.cocktail.selectedAlcohols
   };
 }
 
-export default connect(mapStateToProps)(Home);
+function mapDispatchToProps(dispatch){
+  return bindActionCreators(ActionCreators, dispatch); 
+}
+
+export default connect(mapStateToProps, mapDispatchToProps )(Home);

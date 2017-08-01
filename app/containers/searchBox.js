@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { ListView, TouchableOpacity }  from 'react-native'; 
 import { Grid, Row, View, Button, Icon, Text, Item, Input, InputGroup} from 'native-base';
 import { searchBox } from './../styles/common'; 
 import Pill from './pill'; 
+import { alcohols } from './../lib/data';
+import { ActionCreators } from './../actions';
+
+
 
 class SearchBox extends Component {
 	constructor(props) {
 		super(props);
+
+		console.log('props are ', props); 
 		this.state= {
 			selectedText: '' ,
 			filterAlcohols: [],
 			selectedAlcohols: [], 
-			allAlcohols: [
-				{id: 1, name: 'whiskey'}, 
-				{id: 2, name: 'tequilla'},
-				{id: 3, name: 'rum'},
-				{id: 4, name: 'absinthe'},
-				{id: 5, name: 'gin'},
-			], 
+			allAlcohols: alcohols, 
 			searchBoxOpen: false			
 		}
 	}
@@ -34,27 +35,37 @@ class SearchBox extends Component {
 	}
 
 	showItems(searchTerm){		
-		
-		const filterAlcohols = [];
-		this.state.allAlcohols.forEach((item) => {
-			const parts = searchTerm.trim().split(/[ \-:]+/);
-			const regex = new RegExp(`(${parts.join('|')})`, 'ig');
-			if (regex.test(item.name)) {
-				filterAlcohols.push(item);
-			}
-		});
+		if(searchTerm.trim().length>0){
+			const filterAlcohols = [];
+			this.state.allAlcohols.forEach((item) => {
+				const parts = searchTerm.trim().split(/[ \-:]+/);
+				const regex = new RegExp(`(${parts.join('|')})`, 'ig');
+				if (regex.test(item)) {
+					filterAlcohols.push(item);
+				}
+			});
 
-		this.setState({
-			filterAlcohols: filterAlcohols, 
-			searchBoxOpen: true, 
-			selectedText: searchTerm
-		})
+			this.setState({
+				filterAlcohols: filterAlcohols, 
+				searchBoxOpen: true, 
+				selectedText: searchTerm
+			})
+		}else{
+			this.setState({
+				searchBoxOpen: false, 
+				selectedText: searchTerm
+			})
+		}
+		
 	}
 
 	selectedAlcohol(item){
 		let newArray = this.state.selectedAlcohols;
-		newArray.push(item);
-		this.setState({selectedAlcohols : newArray});
+		if(newArray.indexOf(item)==-1){
+			newArray.push(item);
+			this.setState({selectedAlcohols : newArray});
+			this.props.setSelectedAlcohols(newArray);
+		}
 	}
 
 	getRow = item => (
@@ -68,7 +79,7 @@ class SearchBox extends Component {
 						paddingTop: 5,
 						paddingBottom: 5,
 					}}>
-					{item.name}
+					{item}
 				</Text>
 			</View>
 		</TouchableOpacity>
@@ -127,12 +138,13 @@ class SearchBox extends Component {
 						<Icon name="ios-search"/>
 						<Input
 							onChangeText={searchTerm => this.showItems(searchTerm)}
-							placeholder='whiskey, tequilla'
+							placeholder='Type/Select Alcohol Type'
+							placeholderTextColor='#a0a0a0'
 							value={this.state.selectedText}
 						/>
-						<TouchableOpacity onPress={this.clearSearchBar.bind(this)}>
+						{this.state.selectedText.length!==0 && <TouchableOpacity onPress={this.clearSearchBar.bind(this)}>
 							<Icon name="ios-close-circle"/>
-						</TouchableOpacity>
+						</TouchableOpacity>}
 					</InputGroup>   
 					{this.state.searchBoxOpen &&
 					<View
@@ -159,4 +171,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(SearchBox);
+function mapDispatchToProps(dispatch){
+	return bindActionCreators(ActionCreators, dispatch);
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBox);
